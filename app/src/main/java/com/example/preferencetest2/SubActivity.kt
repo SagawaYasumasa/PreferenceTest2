@@ -34,7 +34,6 @@ class SubActivity : AppCompatActivity() {
         // Test Server Address
         val btnTestServerAddress = findViewById<Button>(R.id.btnTestServerAddress)
         btnTestServerAddress.setOnClickListener{
-            val _address = editServerAddress.getText().toString()
             testServerAddress(editServerAddress.getText().toString())
         }
     }
@@ -52,20 +51,4 @@ class SubActivity : AppCompatActivity() {
         editServerAddress.setText(loadPreference(common.mainActivity))
     }
 
-/*
-    private fun loadPreference() :String{
-        val pref = PreferenceManager.getDefaultSharedPreferences(this)
-        val address = pref.getString("ADDRESS","")
-        return (address.toString())
-    }
- */
-/*
-    private fun savePreference( address: String){
-        val pref = PreferenceManager.getDefaultSharedPreferences(this)
-        val editor = pref.edit()
-        editor.putString("ADDRESS", address)
-            .apply()
-    }
-
- */
 }
