@@ -6,45 +6,11 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <fragment
-        android:id="@+id/titleFragment"
-        android:name="com.example.preferencetest2.TitleFragment"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:layout="@layout/fragment_title" />
-
-    <EditText
-        android:id="@+id/editUri"
-        android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:inputType="textUri"
-        app:layout_constraintTop_toBottomOf="@+id/titleFragment"
-        tools:ignore="SpeakableTextPresentCheck" />
-
-    <Button
-        android:id="@+id/btnDisplayUri"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="button"
-        app:layout_constraintTop_toBottomOf="@+id/editUri"
-        />
     <Button
         android:id="@+id/btnSettings"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Settings"
-        app:layout_constraintTop_toBottomOf="@+id/btnDisplayUri"
+        android:text="@string/btn_settings"
+        app:layout_constraintTop_toTopOf="parent"
         />
-
-    <TextView
-        android:id="@+id/tvTextView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Hello World!"
-        app:layout_constraintTop_toBottomOf="@+id/btnSettings"
-    />
-
-
-
 </androidx.constraintlayout.widget.ConstraintLayout>

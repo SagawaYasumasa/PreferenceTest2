@@ -4,78 +4,61 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.text.Editable
-import android.text.InputType
-import android.text.TextWatcher
 import android.util.Log
-import android.view.inputmethod.EditorInfo
-import android.widget.Button
-import android.widget.EditText
-import android.widget.TextView
 import androidx.preference.PreferenceManager
 import com.example.preferencetest2.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
+    private lateinit var common : Common
+    private lateinit var instance : MainActivity        // applicationContext取得用
     private lateinit var binding : ActivityMainBinding
-    private var  serverUri : String? = null
-    private lateinit var editUri : EditText
+    private lateinit var serverAddress : String         // WebApi Server address
+
 
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        // Initialize Common objects
+        common= getApplication() as Common
+        common.mainActivity = this
+
+        instance = this                                 // applicationContext取得用
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        Log.d("MainActivity onCreate","onCreate")
 
-        val tvTextView = findViewById<TextView>(R.id.tvTextView)
-        editUri = findViewById<EditText>(R.id.editUri)
-
-        serverUri= editUri.getText().toString()
-        Log.d("onCreate","serverUri=" + serverUri.toString())
-
-        val btnDisplayUri = findViewById<Button>(R.id.btnDisplayUri)
-        btnDisplayUri.setOnClickListener{
-            val _address = editUri.getText().toString()
-            if( checkApiUri(_address)) {
-                tvTextView.text = _address
-                savePreference(_address)
-            }
-        }
-
+        // Move to SubActivity
         binding.btnSettings.setOnClickListener{
             val intent = Intent(this, SubActivity::class.java)
-            intent.putExtra("keyName","Yasumasa")
             startActivity(intent)
         }
-
-        editUri.setOnEditorActionListener{ _,actionId, _ ->
-            if(actionId == EditorInfo.IME_ACTION_DONE){
-                tvTextView.text=editUri.getText().toString()
-            }
-            return@setOnEditorActionListener true
-        }
-
     }
     override fun onResume() {
         super.onResume()
-        editUri.setText(loadPreference())
+        serverAddress =loadPreference(this.getInstance())
+        Log.d("MainActivity OnResume","serverAddress="+serverAddress)
     }
-
-    fun savePreference( address: String){
-        val pref = PreferenceManager.getDefaultSharedPreferences(this)
-        val editor = pref.edit()
-        editor.putString("ADDRESS", address)
-            .apply()
-
-    }
-    fun loadPreference() :String{
-        val pref = PreferenceManager.getDefaultSharedPreferences(this)
-        val address = pref.getString("ADDRESS","")
-        return (address.toString())
+    // applicationContext取得用
+    public fun getInstance():MainActivity{
+        return instance
     }
 }
+fun loadPreference(context:MainActivity) :String{
+    val pref = PreferenceManager.getDefaultSharedPreferences(context)
+//        val pref = PreferenceManager.getDefaultSharedPreferences(this)
+    val address = pref.getString("ADDRESS","")
+    return (address.toString())
+}
+fun savePreference(context:MainActivity,address: String){
+    val pref = PreferenceManager.getDefaultSharedPreferences(context)
+    val editor = pref.edit()
+    editor.putString("ADDRESS", address)
+        .apply()
+}
+
 // dummy
-public fun checkApiUri(uri:String): Boolean {
-    if (uri.isNotBlank()) {
+public fun testServerAddress(address:String): Boolean {
+    if (address.isNotBlank()) {
         return true
     } else {
         return false
