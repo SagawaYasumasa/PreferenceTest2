@@ -23,7 +23,7 @@ fun postEcho(address : String): Boolean {
         // getResult
         val result = response.body()?.string() ?: ""
         Log.d("postEcho result",result)
-        echoResult = (json == result)
+        echoResult = (json == result)       // if send json == receive json then TRUE
         response.close()
     }
     catch ( e: Exception) {
