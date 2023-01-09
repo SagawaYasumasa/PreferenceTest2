@@ -9,9 +9,7 @@ import android.view.View
 import androidx.preference.PreferenceManager
 import com.example.preferencetest2.databinding.ActivityMainBinding
 import com.google.android.material.snackbar.Snackbar
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
+import kotlinx.coroutines.*
 
 class MainActivity : AppCompatActivity() {
     private lateinit var common : Common
@@ -30,9 +28,21 @@ class MainActivity : AppCompatActivity() {
         Log.d("MainActivity onCreate","onCreate")
 
         // Move to SubActivity
-        binding.btnSettings.setOnClickListener{
+        binding.btnSettings.setOnClickListener {
             val intent = Intent(this, SubActivity::class.java)
             startActivity(intent)
+        }
+        binding.btnUpload.setOnClickListener {
+            val _address = loadPreference(this)
+            val _ret = runBlocking(){testServerAddress(_address,it)}
+            Log.d("btnUpload","_ret="+_ret.toString())
+
+            if(_ret) {
+                // upload process
+            } else {
+                val snackbar = Snackbar.make(it, "Failed to connect to server.", Snackbar.LENGTH_LONG)
+                snackbar.show()
+            }
         }
     }
     override fun onResume() {
@@ -61,10 +71,10 @@ suspend fun testServerAddress(address:String, view:View): Boolean {
         Log.d("testServerAddress", "ret=" + ret)
     }
     if(ret) {
-        val snackbar = Snackbar.make(view, "Connection is successful.".format(address), Snackbar.LENGTH_LONG)
-        snackbar.show()
+//        val snackbar = Snackbar.make(view, "Connection is successful.".format(address), Snackbar.LENGTH_LONG)
+//        snackbar.show()
     } else {
-        val snackbar = Snackbar.make(view, "Failed to connect to server.", Snackbar.LENGTH_INDEFINITE)
+        val snackbar = Snackbar.make(view, "Failed to connect to server.", Snackbar.LENGTH_LONG)
         snackbar.show()
     }
     return ret

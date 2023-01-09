@@ -9,6 +9,7 @@ import com.example.preferencetest2.databinding.ActivitySubBinding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
 class SubActivity : AppCompatActivity() {
     private lateinit var common : Common
@@ -26,11 +27,15 @@ class SubActivity : AppCompatActivity() {
 
         // Test Server Address
         val btnTestServerAddress = findViewById<Button>(R.id.btnTestServerAddress)
-        btnTestServerAddress.setOnClickListener{
-            val scope = CoroutineScope(Dispatchers.Default)
-            scope.launch{testServerAddress(editServerAddress.getText().toString(),findViewById(R.id.layout))}}
+        btnTestServerAddress.setOnClickListener {
+            val _ret = runBlocking() {
+                testServerAddress(
+                    editServerAddress.getText().toString(),
+                    findViewById(R.id.layout)
+                )
+            }
+        }
     }
-
     override fun onPause(){
         super.onPause()
         Log.d("SubActivity","onPause")
