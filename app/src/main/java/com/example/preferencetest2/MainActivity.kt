@@ -53,7 +53,7 @@ fun savePreference(context:MainActivity,address: String){
         .apply()
 }
 
-public suspend fun testServerAddress(address:String, view:View): Boolean {
+suspend fun testServerAddress(address:String, view:View): Boolean {
     var ret = false
     if (address.isBlank()) { ret = false } else {
         val scope = CoroutineScope(Dispatchers.Default)
@@ -67,5 +67,5 @@ public suspend fun testServerAddress(address:String, view:View): Boolean {
         val snackbar = Snackbar.make(view, "Failed to connect to server.", Snackbar.LENGTH_INDEFINITE)
         snackbar.show()
     }
-    return true
+    return ret
 }
