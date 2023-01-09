@@ -3,11 +3,13 @@ package com.example.preferencetest2
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.view.inputmethod.EditorInfo
 import android.widget.Button
 import android.widget.EditText
-import androidx.preference.PreferenceManager
 import com.example.preferencetest2.databinding.ActivitySubBinding
+import com.google.android.material.snackbar.Snackbar
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class SubActivity : AppCompatActivity() {
     private lateinit var common : Common
@@ -19,23 +21,15 @@ class SubActivity : AppCompatActivity() {
 
         binding = ActivitySubBinding.inflate(layoutInflater)
         setContentView(binding.root)
-//        setContentView(R.layout.activity_sub)
 
         // Edit Server Address
         val editServerAddress = findViewById<EditText>(R.id.editServerAddress)
-        editServerAddress.setOnEditorActionListener{ _,actionId, _ ->
-            if(actionId == EditorInfo.IME_ACTION_DONE){
-                Log.d("editServerAddress","IME_ACTION_DONE")
-                testServerAddress(editServerAddress.getText().toString())
-            }
-            return@setOnEditorActionListener true
-        }
 
         // Test Server Address
         val btnTestServerAddress = findViewById<Button>(R.id.btnTestServerAddress)
         btnTestServerAddress.setOnClickListener{
-            testServerAddress(editServerAddress.getText().toString())
-        }
+            val scope = CoroutineScope(Dispatchers.Default)
+            scope.launch{testServerAddress(editServerAddress.getText().toString(),findViewById(R.id.layout))}}
     }
 
     override fun onPause(){
@@ -50,5 +44,4 @@ class SubActivity : AppCompatActivity() {
         val editServerAddress = findViewById<EditText>(R.id.editServerAddress)
         editServerAddress.setText(loadPreference(common.mainActivity))
     }
-
 }
