@@ -5,8 +5,6 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.view.View
-import androidx.preference.PreferenceManager
 import com.example.preferencetest2.databinding.ActivityMainBinding
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.*
@@ -14,7 +12,6 @@ import kotlinx.coroutines.*
 class MainActivity : AppCompatActivity() {
     private lateinit var common : Common
     private lateinit var binding : ActivityMainBinding
-    private lateinit var serverAddress : String         // WebApi Server address
 
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -33,11 +30,12 @@ class MainActivity : AppCompatActivity() {
             startActivity(intent)
         }
         binding.btnUpload.setOnClickListener {
-            val _address = loadPreference(this)
-            val _ret = runBlocking(){testServerAddress(_address,it)}
+            val _ret = common.webApiHeatmap.testServerAddress(common.webApiHeatmap.serverAddress)
             Log.d("btnUpload","_ret="+_ret.toString())
 
             if(_ret) {
+                val snackbar = Snackbar.make(it, "upload", Snackbar.LENGTH_LONG)
+                snackbar.show()
                 // upload process
             } else {
                 val snackbar = Snackbar.make(it, "Failed to connect to server.", Snackbar.LENGTH_LONG)
@@ -47,35 +45,7 @@ class MainActivity : AppCompatActivity() {
     }
     override fun onResume() {
         super.onResume()
-        serverAddress =loadPreference(common.mainActivity)
-        Log.d("MainActivity OnResume","serverAddress="+serverAddress)
+        Log.d("MainActivity","onResume")
+        common.webApiHeatmap.loadServerAddressFromPreference()
     }
-}
-fun loadPreference(context:MainActivity) :String{
-    val pref = PreferenceManager.getDefaultSharedPreferences(context)
-    val address = pref.getString("ADDRESS","")
-    return (address.toString())
-}
-fun savePreference(context:MainActivity,address: String){
-    val pref = PreferenceManager.getDefaultSharedPreferences(context)
-    val editor = pref.edit()
-    editor.putString("ADDRESS", address)
-        .apply()
-}
-
-suspend fun testServerAddress(address:String, view:View): Boolean {
-    var ret = false
-    if (address.isBlank()) { ret = false } else {
-        val scope = CoroutineScope(Dispatchers.Default)
-        ret = scope.async { postEcho(address) }.await()
-        Log.d("testServerAddress", "ret=" + ret)
-    }
-    if(ret) {
-//        val snackbar = Snackbar.make(view, "Connection is successful.".format(address), Snackbar.LENGTH_LONG)
-//        snackbar.show()
-    } else {
-        val snackbar = Snackbar.make(view, "Failed to connect to server.", Snackbar.LENGTH_LONG)
-        snackbar.show()
-    }
-    return ret
 }

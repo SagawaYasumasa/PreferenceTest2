@@ -6,10 +6,7 @@ import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import com.example.preferencetest2.databinding.ActivitySubBinding
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
+import com.google.android.material.snackbar.Snackbar
 
 class SubActivity : AppCompatActivity() {
     private lateinit var common : Common
@@ -28,11 +25,13 @@ class SubActivity : AppCompatActivity() {
         // Test Server Address
         val btnTestServerAddress = findViewById<Button>(R.id.btnTestServerAddress)
         btnTestServerAddress.setOnClickListener {
-            val _ret = runBlocking() {
-                testServerAddress(
-                    editServerAddress.getText().toString(),
-                    findViewById(R.id.layout)
-                )
+            val _ret = common.webApiHeatmap.testServerAddress(editServerAddress.text.toString())
+            if(_ret) {
+                val snackbar = Snackbar.make(it, "Connection is successful.", Snackbar.LENGTH_LONG)
+                snackbar.show()
+            } else {
+                val snackbar = Snackbar.make(it, "Failed to connect to server.", Snackbar.LENGTH_LONG)
+                snackbar.show()
             }
         }
     }
@@ -40,12 +39,12 @@ class SubActivity : AppCompatActivity() {
         super.onPause()
         Log.d("SubActivity","onPause")
         val editServerAddress = findViewById<EditText>(R.id.editServerAddress)
-        savePreference(common.mainActivity,editServerAddress.getText().toString())
+        common.webApiHeatmap.saveServerAddressToPreference(editServerAddress.getText().toString())
     }
     override fun onResume() {
         super.onResume()
         Log.d("SubActivity","onResume")
         val editServerAddress = findViewById<EditText>(R.id.editServerAddress)
-        editServerAddress.setText(loadPreference(common.mainActivity))
+        editServerAddress.setText(common.webApiHeatmap.loadServerAddressFromPreference())
     }
 }
